@@ -1,20 +1,10 @@
 #!/usr/bin/env node
 /**
- * Consome a tabela "PontuacaoEquipes" (aba "Página1") da planilha de pontuação
- * e salva uma cópia em src/data/pontuacao-planilha.json.
+ * Baixa a tabela "PontuacaoEquipes" (aba "Página1") e salva uma cópia em
+ * src/data/pontuacao-planilha.json (placar inicial do build e reserva).
+ * Roda antes de `npm run build`.
  *
- * O site já lê a planilha sozinho (atualiza a cada 60 s). Esta cópia serve de
- * reserva: se o Google estiver fora do ar no momento, o placar usa o último
- * resultado salvo aqui.
- *
- * Uso:
- *   npm run pontuacao            → baixa, mostra a tabela e salva a cópia
- *   npm run pontuacao -- --ver   → só mostra, sem salvar
- *
- * Também roda automaticamente antes de `npm run build` (com --tolerante:
- * se a planilha estiver inacessível, avisa e o build segue com a última cópia).
- *
- * Outra planilha/aba: defina PONTUACAO_SHEET_ID e/ou PONTUACAO_ABA.
+ * Uso: npm run pontuacao [-- --ver]
  */
 import { writeFile } from "node:fs/promises";
 import path from "node:path";

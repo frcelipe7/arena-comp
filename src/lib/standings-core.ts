@@ -1,5 +1,4 @@
-// Cálculo da classificação geral (arts. 13 a 16). Sem dependências de servidor:
-// roda no build (dados iniciais) e no navegador (atualização ao vivo da planilha).
+// Classificação geral (arts. 13 a 16). Roda no build e no navegador.
 import { challenges } from "@/data/challenges";
 import { results, resultsStatus } from "@/data/results";
 import { pointsForPlace } from "@/data/scoring";

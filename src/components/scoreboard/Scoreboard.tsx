@@ -15,10 +15,7 @@ import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-/**
- * Placar geral. Sem resultados cadastrados, mostra as seis equipes
- * em ordem de grupo com um estado vazio (nenhum resultado é inventado).
- */
+/** Placar geral. Sem pontos lançados, mostra as equipes com estado vazio. */
 export function Scoreboard({ data: initial, compact = false }: { data: StandingsData; compact?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const [data, setData] = useState(initial);
@@ -26,8 +23,7 @@ export function Scoreboard({ data: initial, compact = false }: { data: Standings
   const empty = standings.length === 0;
   const signature = standings.map((s) => `${s.team.id}:${s.total}`).join("|");
 
-  // Site estático: o placar consulta a planilha direto do navegador
-  // ao abrir a página e a cada 60 s (só enquanto a aba está visível).
+  // Consulta a planilha ao abrir a página e a cada 60 s (com a aba visível).
   useEffect(() => {
     let alive = true;
     const refresh = async () => {

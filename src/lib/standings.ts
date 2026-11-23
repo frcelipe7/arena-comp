@@ -7,14 +7,8 @@ import { EMPTY_STANDINGS, dataFromSheet, standingsFromResultsFile, type Standing
 export type { Standing, StandingsData } from "@/lib/standings-core";
 
 /**
- * Dados INICIAIS do placar, gravados no HTML durante o `npm run build`.
- *
- * O build roda antes `scripts/pontuacao.mjs` (etapa "prebuild"), que baixa a
- * planilha e atualiza src/data/pontuacao-planilha.json. Depois de carregada,
- * a página consulta a planilha direto do navegador a cada 60 s (Scoreboard),
- * então o site estático fica atualizado sem precisar de novo build.
- *
- * Prioridade: cópia da planilha → src/data/results.ts → vazio.
+ * Placar inicial gravado no HTML no build (cópia salva por scripts/pontuacao.mjs).
+ * No navegador, o Scoreboard atualiza direto pela planilha.
  */
 export async function getStandings(): Promise<StandingsData> {
   const linhas = snapshot.linhas as LinhaPontuacao[];

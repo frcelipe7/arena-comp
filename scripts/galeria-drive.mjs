@@ -1,19 +1,10 @@
 #!/usr/bin/env node
 /**
- * Lê a pasta pública da galeria no Google Drive (com todas as subpastas) e
- * salva a lista de fotos em src/data/galeria-drive.json.
+ * Lê a pasta pública da galeria no Google Drive e salva a lista de fotos em
+ * src/data/galeria-drive.json. Roda antes de `npm run build`; a lista vira a
+ * galeria inicial do site (as atualizações ao vivo vêm da aba "Galeria" da planilha).
  *
- * Roda sozinho antes de `npm run build` (com --tolerante). Assim, toda
- * publicação já sai com as fotos que estiverem no Drive naquele momento.
- * Para fotos novas aparecerem SEM novo build, publique também o Apps Script
- * (deploy/galeria-apps-script.gs) e configure galleryDriveEndpoint.
- *
- * Uso:
- *   npm run galeria:drive              → lê e salva
- *   npm run galeria:drive -- --ver     → só mostra
- *
- * Outra pasta: GALERIA_PASTA_ID=<id> npm run galeria:drive
- * A pasta precisa estar como "Qualquer pessoa com o link: Leitor".
+ * Uso: npm run galeria:drive [-- --ver]
  */
 import { writeFile } from "node:fs/promises";
 import path from "node:path";

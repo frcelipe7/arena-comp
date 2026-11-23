@@ -1,81 +1,197 @@
 # Portal Arena Comp 2026
 
-Portal de informações da Arena Comp 2026, gincana do curso de Engenharia de Software da UEPA, Campus Parauapebas.
+Site oficial da Arena Comp 2026, gincana do curso de Engenharia de Software da UEPA, Campus Parauapebas.
 
-Stack: Next.js 15 (App Router), TypeScript, Tailwind CSS 4, GSAP + ScrollTrigger, Lenis e Lucide.
+O site é **estático**: só arquivos HTML, CSS, JavaScript, imagens e PDFs. **Não usa banco de dados, PHP, Node.js nem nenhum programa rodando no servidor.** Basta um servidor web comum (Nginx, Apache, IIS etc.).
 
-## Rodar e publicar
+---
 
-O site é **100% estático**: o build gera a pasta **`out/`** (HTML, CSS, JS, imagens e PDFs), pronta para qualquer servidor web, como o `build/` de um projeto React.
+## ✅ O build já está pronto
+
+**Não é preciso instalar nem compilar nada.** O site pronto para publicar está na pasta:
+
+```
+site-pronto/arena-comp/
+```
+
+(O mesmo conteúdo também pode ser enviado compactado como `arena-comp-site.zip`.)
+
+---
+
+## Como colocar o site no ar
+
+### 1. Copie os arquivos
+
+Pegue a pasta **`site-pronto/arena-comp`** (ou descompacte o `arena-comp-site.zip`, que contém a mesma pasta `arena-comp`).
+
+Coloque a pasta `arena-comp` **dentro da pasta pública do servidor web** (a mesma pasta onde fica o `index.html` do site principal). Exemplos:
+
+| Servidor | Onde colocar |
+| --- | --- |
+| Nginx (padrão) | `/var/www/html/arena-comp/` |
+| Apache (padrão) | `/var/www/html/arena-comp/` |
+| Hospedagem com painel (cPanel etc.) | `public_html/arena-comp/` |
+
+Confira se ficou assim (o `index.html` precisa estar **direto** dentro de `arena-comp`):
+
+```
+pasta-publica-do-servidor/
+└── arena-comp/
+    ├── index.html
+    ├── 404.html
+    ├── _next/
+    ├── brand/
+    ├── docs/
+    ├── cronograma/
+    ├── equipes/
+    └── ...
+```
+
+### 2. Acesse
+
+Abra no navegador: **`https://SEU-DOMINIO/arena-comp/`**
+
+Pronto. Na maioria dos servidores não é preciso configurar mais nada.
+
+> **Importante:** o site foi preparado para funcionar no endereço **`/arena-comp/`**. Se ele for colocado em outro endereço (por exemplo, na raiz de um domínio ou em `/arenacomp`), as páginas abrem sem estilo. Nesse caso, peça um novo pacote informando o endereço final (veja "Gerar um novo pacote", mais abaixo).
+
+### 3. Só se precisar: configuração do Nginx
+
+Se o servidor já tiver uma regra que redireciona tudo para o `index.html` do site principal (comum em sites feitos com React/Vue), o portal pode abrir em branco. Para resolver, acrescente dentro do bloco `server { ... }` do site, **antes** do `location /`:
+
+```nginx
+location = /arena-comp {
+    return 301 /arena-comp/;
+}
+
+location ^~ /arena-comp/ {
+    try_files $uri $uri/ =404;
+    error_page 404 /arena-comp/404.html;
+}
+
+location ^~ /arena-comp/_next/static/ {
+    expires 1y;
+    add_header Cache-Control "public, immutable";
+}
+```
+
+Depois, teste e recarregue o Nginx:
+
+```bash
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+Se a pasta `arena-comp` ficar **fora** da pasta pública do site, adicione `alias` com o caminho dela nos dois últimos blocos (com a barra no final). Exemplo:
+
+```nginx
+location ^~ /arena-comp/ {
+    alias /var/www/outra-pasta/arena-comp/;
+    try_files $uri $uri/ =404;
+    error_page 404 /arena-comp/404.html;
+}
+```
+
+### Como saber se deu certo
+
+- `https://SEU-DOMINIO/arena-comp/` abre a página inicial colorida, com o mascote.
+- Os menus (Cronograma, Equipes, Desafios…) abrem normalmente.
+- O link "Baixar regimento (PDF)" baixa o arquivo.
+
+Se a página abrir **sem cores/estilo**, os arquivos estão num endereço diferente de `/arena-comp/` ou alguma regra do servidor está desviando os arquivos `.js` e `.css` (veja o passo 3).
+
+---
+
+## O que se atualiza sozinho
+
+O servidor **não precisa ser mexido** durante o evento. Duas partes do site são atualizadas direto pelo Google, no navegador de quem acessa:
+
+- **Placar:** lido da planilha de pontuação (aba `Página1`), a cada 60 segundos.
+- **Galeria de fotos:** as fotos colocadas na pasta **ArenaComp** do Google Drive aparecem no site em até ~8 minutos.
+
+Isso depende apenas de a planilha e a pasta do Drive continuarem compartilhadas como **"Qualquer pessoa com o link: Leitor"**.
+
+---
+
+## Para quem mantém o projeto
+
+### Requisitos
+
+Node.js 20 ou superior.
 
 ```bash
 npm install
-npm run dev        # desenvolvimento em http://localhost:3000
-npm run build      # baixa a planilha de pontuação e gera a pasta out/
-npm run preview    # (opcional) testa out/ em http://localhost:3000/arena-comp/
+npm run dev        # desenvolvimento: http://localhost:3000/arena-comp/
+npm run build      # gera a pasta out/ (baixa antes a planilha e a lista de fotos)
+npm run preview    # testa a pasta out/ em http://localhost:3000/arena-comp/
 ```
 
-**Publicar na VPS:** o build sai preparado para a subpasta **`/arena-comp`** (https://feliperaphael.com.br/arena-comp). Para publicar na raiz de um domínio, gere com `PUBLIC_BASE_PATH="" npm run build`.
+### Gerar um novo pacote
 
-1. Copie o **conteúdo** de `out/` para `/var/www/feliperaphael.com.br/arena-comp/` na VPS (apague a versão anterior antes).
-2. Cole os blocos de [`deploy/nginx-arena-comp.conf`](deploy/nginx-arena-comp.conf) dentro do `server` com `listen 443 ssl`.
-3. `sudo nginx -t && sudo systemctl reload nginx`.
+1. `npm run build` (gera a pasta `out/`).
+2. Substitua o conteúdo de `site-pronto/arena-comp/` pelo conteúdo de `out/`.
+3. Se for enviar compactado: gere `arena-comp-site.zip` com `site-pronto/LEIA-ME.txt` e a pasta `arena-comp`.
 
-Defina `NEXT_PUBLIC_SITE_URL` (padrão `https://feliperaphael.com.br`) se o domínio mudar.
+Para outro endereço de publicação, defina a subpasta no build:
 
-Só é preciso refazer o build quando mudar conteúdo (equipes, textos, fotos). O placar **não** precisa de novo build: ele é atualizado pela planilha direto no navegador.
+```bash
+PUBLIC_BASE_PATH="/outro-caminho" npm run build   # https://dominio/outro-caminho/
+PUBLIC_BASE_PATH="" npm run build                 # raiz do domínio
+```
 
-## Rotas
+Os metadados de compartilhamento usam `https://feliperaphael.com.br`; para outro domínio, defina `NEXT_PUBLIC_SITE_URL`.
 
-`/` · `/cronograma` · `/equipes` · `/desafios` · `/desafios/algoritmo-natural` · `/desafios/maratona` · `/desafios/perguntas-e-respostas` · `/desafios/robotica` · `/pontuacao` · `/regulamento` · `/faq` · `/galeria`
+### Placar (Google Sheets)
 
-## Atualizar o conteúdo (sem mexer no visual)
+Planilha de pontuação, aba **`Página1`**, tabela com as colunas `Equipes`, `Algoritmo`, `Maratona`, `Torta na Cara`, `Robótica`, `Bônus` e `Total`. Os valores são **pontos** (100, 80, 60…); célula vazia significa "ainda não lançado". A equipe pode ser escrita pelo nome (Pressman) ou pela cor (Azul).
 
-Todo o conteúdo fica em `src/data/`:
+`npm run pontuacao -- --ver` mostra o que o site está lendo.
 
-| Arquivo | O que atualizar |
+### Galeria (Google Drive + Google Sheets)
+
+```
+Pasta ArenaComp no Drive ──a cada 5 min──▶ aba "Galeria" da planilha ──▶ site
+          script da planilha (deploy/planilha-galeria.gs)
+```
+
+Subpastas do Drive: `03-dezembro`, `04-dezembro`, `algoritmo-natural`, `maratona-programacao`, `perguntas-respostas`, `robotica`, `premiacao`, `bastidores` e `equipes/<equipe>` (`pressman`, `turing`, `sommerville`, `kurose`, `ada`, `grace`). A pasta define o filtro em que a foto aparece; a **Descrição** do arquivo no Drive vira a legenda.
+
+**Instalação do script (uma vez, pela conta dona da planilha):**
+
+1. Planilha de pontuação → **Extensões → Apps Script**.
+2. Cole o conteúdo de [`deploy/planilha-galeria.gs`](deploy/planilha-galeria.gs) e salve.
+3. Selecione a função **`instalar`** → **Executar** → autorize (em "O Google não verificou este app": Avançado → Acessar).
+
+A aba **Galeria** passa a se atualizar sozinha a cada 5 minutos; o menu **Arena Comp → Atualizar galeria agora** força a atualização. Não renomeie as abas `Galeria` e `Página1`.
+
+### Onde mudar o conteúdo
+
+Tudo em `src/data/`, sem mexer no visual:
+
+| Arquivo | Conteúdo |
 | --- | --- |
-| `teams.ts` | `leader`, `viceLeader` e `members` de cada equipe. Vazios = aviso "será divulgada". |
-| `schedule.ts` | Horários do dia 03 (hoje `time: null`, `status: "pendente"`) e da final da Maratona. |
-| `results.ts` | Reserva manual do placar, usada só se a planilha não tiver pontos. |
-| `gallery.ts` | Registros das fotos (veja abaixo). |
-| `faq.ts` | Perguntas e respostas. |
-| `challenges.ts`, `scoring.ts`, `rules.ts` | Regras do regimento. |
-| `event.ts` | Datas, local, documentos e menu. |
+| `teams.ts` | Equipes, líderes, vice-líderes e integrantes |
+| `schedule.ts` | Cronograma dos dois dias |
+| `challenges.ts` | Regras e critérios de cada desafio |
+| `scoring.ts` | Pontos por colocação, bônus, desempate e nota extra |
+| `faq.ts` | Perguntas frequentes |
+| `rules.ts` | Regulamento por capítulo |
+| `event.ts` | Datas, local, documentos e menu |
+| `results.ts` | Placar manual (usado só se a planilha não tiver pontos) |
 
-### Fotos da galeria (Google Drive) — atualização automática
+Depois de alterar, gere um novo pacote.
 
-As fotos ficam na pasta **ArenaComp** do Google Drive (pública para leitura), nas subpastas `03-dezembro`, `04-dezembro`, `algoritmo-natural`, `maratona-programacao`, `perguntas-respostas`, `robotica`, `premiacao`, `bastidores` e `equipes/<equipe>`.
-
-**Como as fotos chegam ao site, sem novo build e sem acesso ao servidor:**
+### Estrutura
 
 ```
-Drive (pasta ArenaComp) ──a cada 5 min──▶ Planilha, aba "Galeria" ──navegador──▶ site
-        script da planilha (deploy/planilha-galeria.gs)       (a cada 3 min com a página aberta)
+src/app/          páginas (rotas)
+src/components/   componentes visuais
+src/data/         conteúdo do site
+src/lib/          leitura da planilha/Drive, placar, downloads
+public/           imagens (brand/), PDFs (docs/) e imagem de compartilhamento
+scripts/          leitura da planilha e do Drive no build; preview local
+deploy/           script da planilha (galeria) e exemplo de Nginx
+site-pronto/      build pronto para publicar (pasta arena-comp + LEIA-ME.txt)
+assets-src/       artes originais em alta resolução (não vão para o site)
 ```
 
-**Instalação (uma única vez, pela conta dona da planilha):**
-
-1. Abra a planilha de pontuação → **Extensões → Apps Script**.
-2. Apague o conteúdo, cole [`deploy/planilha-galeria.gs`](deploy/planilha-galeria.gs) e salve.
-3. Selecione a função **`instalar`** e clique em **Executar**. Autorize o acesso (em "O Google não verificou este app": Avançado → Acessar).
-4. A aba **Galeria** é criada e passa a se atualizar sozinha a cada 5 minutos. Na planilha surge o menu **Arena Comp → Atualizar galeria agora**.
-
-**Regras para tudo continuar funcionando:** não renomear a aba `Galeria` nem a aba `Página1`; manter a planilha e a pasta do Drive como "Qualquer pessoa com o link: Leitor".
-
-**Filtros:** a pasta define onde a foto aparece. `03-dezembro`/`04-dezembro` vão para o filtro do dia; Algoritmo Natural conta no dia 03; Perguntas e Respostas, Robótica e Premiação no dia 04; Maratona nos dois dias; `equipes/<equipe>` em Equipes com o nome da equipe. A **Descrição** do arquivo no Drive vira a legenda.
-
-O site usa versões redimensionadas pelo Google (900 px no grid, 2000 px no visualizador) e baixa o original nos downloads. Se a aba `Galeria` não existir, o site mostra as fotos lidas no último `npm run build` (`scripts/galeria-drive.mjs`).
-
-Fotos também podem ser colocadas no próprio site (`public/images/gallery/`, rode `npm run galeria:otimizar` e registre em `src/data/gallery.ts`); elas aparecem junto com as do Drive.
-
-## Identidade visual
-
-- Logotipo e mascote: `public/brand/*.webp`, já no tamanho de uso. Os PNGs originais em alta ficam em `assets-src/` (recortados da arte original `public/references/logo-mascote.jpeg` e do PDF de divulgação, sem redesenho).
-- Cores: azul-marinho `#022442` (logo), dourado `#F5B623`, papel `#F1E5C9` (arte de divulgação). Tokens em `src/app/globals.css`.
-- Tipografia: Poppins, a mesma da arte de divulgação.
-
-## Documentos
-
-- `public/docs/regimento-arena-comp-2026.pdf`: regimento oficial (traz as datas originais; o portal sinaliza a atualização para 03 e 04/12).
-- `public/docs/gincana-arena-comp-2026.pdf`: arte de divulgação.
+Tecnologias: Next.js 15 (exportação estática), TypeScript, Tailwind CSS 4, GSAP, Lenis, Lucide e fflate.

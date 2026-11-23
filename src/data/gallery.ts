@@ -1,13 +1,7 @@
-import type { GalleryCategory, GalleryPhoto } from "@/types";
+import type { GalleryCategory } from "@/types";
 
-
-export const galleryDriveEndpoint: string = process.env.NEXT_PUBLIC_GALERIA_URL || "";
-
-/** Pasta pública da galeria no Drive (link "Abrir no Google Drive"). */
+/** Pasta pública da galeria no Google Drive. */
 export const galleryDriveFolderUrl = "https://drive.google.com/drive/folders/1qbHoemlg6zBQuwaGyO6WBQk-NDZhC3iR";
-
-
-export const galleryPhotos: GalleryPhoto[] = [];
 
 export const galleryCategories: { id: GalleryCategory; label: string }[] = [
   { id: "algoritmo-natural", label: "Algoritmo Natural" },

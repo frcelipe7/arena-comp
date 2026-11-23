@@ -1,0 +1,35 @@
+ARENA COMP 2026 - COMO COLOCAR O SITE NO AR
+============================================
+
+O site e estatico (HTML, CSS, JS, imagens e PDFs). Nao precisa de banco de
+dados, PHP ou Node.js no servidor.
+
+1) Copie a pasta "arena-comp" deste pacote para dentro da pasta publica do
+   servidor web (onde fica o index.html do site principal). Exemplos:
+     Nginx/Apache:  /var/www/html/arena-comp/
+     cPanel:        public_html/arena-comp/
+   O arquivo index.html precisa ficar direto dentro de "arena-comp".
+
+2) Acesse: https://SEU-DOMINIO/arena-comp/
+
+IMPORTANTE: o site foi preparado para o endereco /arena-comp/. Em outro
+endereco as paginas abrem sem estilo; nesse caso, peca um novo pacote.
+
+SE ABRIR EM BRANCO OU SEM ESTILO NO NGINX: o servidor provavelmente tem uma
+regra que manda tudo para o index.html do site principal. Acrescente no bloco
+"server { ... }", antes do "location /":
+
+    location = /arena-comp {
+        return 301 /arena-comp/;
+    }
+
+    location ^~ /arena-comp/ {
+        try_files $uri $uri/ =404;
+        error_page 404 /arena-comp/404.html;
+    }
+
+Depois: sudo nginx -t && sudo systemctl reload nginx
+
+O placar e a galeria de fotos sao atualizados pelo Google (planilha e Drive),
+direto no navegador de quem acessa. Nao e preciso mexer no servidor durante
+o evento.

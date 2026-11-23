@@ -1,6 +1,4 @@
-// Leitura da tabela "PontuacaoEquipes" (aba "Página1") da planilha de pontuação.
-// Módulo em JavaScript puro para ser usado tanto pelo site (src/lib/standings.ts)
-// quanto pelo script de linha de comando (scripts/pontuacao.mjs).
+// Leitura da planilha de pontuação (usada pelo site e por scripts/pontuacao.mjs).
 
 export const PLANILHA_PADRAO = {
   id: "1o72KYbuZCXk2Et7BlNabak5INelt-ijhAcuwkGIqhzE",
@@ -9,7 +7,7 @@ export const PLANILHA_PADRAO = {
 };
 
 /**
- * URL pública de exportação em CSV (funciona com a planilha em "qualquer pessoa com o link pode ver").
+ * URL de exportação em CSV de uma aba (planilha pública para leitura).
  * @param {string} id
  * @param {string} aba
  */
@@ -27,7 +25,6 @@ function normalizar(s) {
 }
 
 /**
- * CSV simples com aspas duplas (formato do Google Sheets).
  * @param {string} texto
  * @returns {string[][]}
  */
@@ -65,7 +62,6 @@ export function lerCsv(texto) {
   return linhas;
 }
 
-/** Colunas reconhecidas no cabeçalho da tabela. */
 const COLUNAS = /** @type {const} */ ({
   equipe: ["equipes", "equipe", "time", "grupo"],
   "algoritmo-natural": ["algoritmo", "algoritmo natural"],
@@ -78,7 +74,7 @@ const COLUNAS = /** @type {const} */ ({
 });
 
 /**
- * Converte "100", "80,5" ou "" em número (ou null quando vazio).
+ * "100", "80,5" → número; vazio → null.
  * @param {string | undefined} v
  */
 function numero(v) {
@@ -91,7 +87,7 @@ function numero(v) {
 
 /**
  * @typedef {Object} LinhaPontuacao
- * @property {string} equipe Nome como está na planilha
+ * @property {string} equipe
  * @property {number | null} algoritmoNatural
  * @property {number | null} maratona
  * @property {number | null} perguntasERespostas
@@ -102,9 +98,7 @@ function numero(v) {
  */
 
 /**
- * Extrai as linhas da tabela PontuacaoEquipes a partir do CSV da aba.
- * Localiza o cabeçalho pela coluna "Equipes", então funciona mesmo se a tabela
- * não começar na célula A1.
+ * Localiza o cabeçalho pela coluna "Equipes" (a tabela não precisa começar em A1).
  * @param {string} csv
  * @returns {LinhaPontuacao[]}
  */
@@ -143,8 +137,7 @@ export function lerPontuacao(csv) {
 }
 
 /**
- * true quando a comissão já lançou algum ponto (o Total da planilha
- * mostra 0 mesmo vazio, então ele não conta).
+ * Há algum ponto lançado? (o Total mostra 0 mesmo vazio, por isso não conta)
  * @param {LinhaPontuacao[]} linhas
  */
 export function temPontos(linhas) {
@@ -160,8 +153,7 @@ export function temPontos(linhas) {
 }
 
 /**
- * Baixa e interpreta a tabela.
- * @param {{ id?: string; aba?: string; fetchInit?: RequestInit & { next?: { revalidate?: number } } }} [opcoes]
+ * @param {{ id?: string; aba?: string; fetchInit?: RequestInit }} [opcoes]
  */
 export async function buscarPontuacao(opcoes = {}) {
   const id = opcoes.id ?? PLANILHA_PADRAO.id;

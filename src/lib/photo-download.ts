@@ -1,5 +1,4 @@
-// Download de fotos da galeria: individual (arquivo original) ou várias em .zip.
-// Tudo acontece no navegador; o Google Drive libera CORS para os originais.
+// Download de fotos da galeria: uma (arquivo original) ou várias em .zip, no navegador.
 import { Zip, ZipPassThrough } from "fflate";
 import { withBase } from "@/lib/base-path";
 import type { GalleryPhoto } from "@/types";
@@ -12,7 +11,7 @@ function baseName(p: GalleryPhoto) {
   return /\.\w{3,4}$/.test(fromSrc) ? fromSrc : `${p.id}.jpg`;
 }
 
-/** Baixa os bytes do arquivo original (com reserva na versão em alta do Google). */
+/** Arquivo original; se falhar, a versão em resolução máxima do Google. */
 async function fetchPhoto(p: GalleryPhoto, signal?: AbortSignal): Promise<Blob> {
   const urls = [p.download ?? p.src];
   const id = p.download?.match(DRIVE_ID)?.[1];
@@ -58,10 +57,7 @@ export interface ZipProgress {
   failed: number;
 }
 
-/**
- * Baixa várias fotos e salva um único .zip, mantendo as subpastas do Drive
- * (ex.: robotica/foto-01.jpg). Fotos que falharem são puladas e contadas.
- */
+/** Salva várias fotos num .zip com as subpastas do Drive; falhas são puladas e contadas. */
 export async function downloadZip(
   photos: GalleryPhoto[],
   zipName: string,
@@ -94,7 +90,7 @@ export async function downloadZip(
   const progress: ZipProgress = { done: 0, total: photos.length, failed: 0 };
   onProgress({ ...progress });
 
-  // Até 4 downloads em paralelo; fotos já comprimidas entram no zip sem recompressão.
+  // 4 downloads em paralelo; fotos entram no zip sem recompressão.
   let next = 0;
   const worker = async () => {
     while (next < photos.length) {

@@ -1,5 +1,4 @@
-// Converte a lista de fotos do Google Drive (Apps Script) em registros da galeria.
-import { galleryCategories, galleryDriveEndpoint } from "@/data/gallery";
+import { galleryCategories } from "@/data/gallery";
 import { teams } from "@/data/teams";
 import { normalize } from "@/lib/utils";
 import type { GalleryCategory, GalleryPhoto, TeamId } from "@/types";
@@ -13,15 +12,10 @@ export interface DriveFile {
   criadoEm: string;
 }
 
-interface DriveResponse {
-  atualizadoEm: string;
-  fotos: DriveFile[];
-}
-
 const DAY_1 = "03/12/2026" as const;
 const DAY_2 = "04/12/2026" as const;
 
-/** Nome de pasta → categoria/dia. Os dias dos desafios seguem o cronograma oficial. */
+/** Nome da pasta no Drive → categoria e dia (dias dos desafios conforme o cronograma). */
 const folderRules: { match: string[]; category?: GalleryCategory; day?: GalleryPhoto["day"] }[] = [
   { match: ["03-dezembro", "03-de-dezembro", "dia-03", "dia-1", "dia-01"], day: DAY_1 },
   { match: ["04-dezembro", "04-de-dezembro", "dia-04", "dia-2", "dia-02"], day: DAY_2 },
@@ -41,13 +35,10 @@ function findTeam(segment: string): TeamId | undefined {
   return teams.find((t) => s === t.id || s === slug(t.name) || s === slug(t.colorName) || s.includes(t.id))?.id;
 }
 
-/** URL de imagem redimensionada pelo próprio Google (arquivo público no Drive). */
+/** Imagem redimensionada pelo Google. */
 export const driveImage = (id: string, width: number) => `https://lh3.googleusercontent.com/d/${id}=w${width}`;
 
-/**
- * Arquivo original, byte a byte (sufixo "=d"), com CORS liberado pelo Google.
- * (O endereço drive.usercontent.google.com recusa pedidos vindos de outro site.)
- */
+/** Arquivo original (o sufixo "=d" permite baixar a partir de outro site). */
 export const driveOriginal = (id: string) => `https://lh3.googleusercontent.com/d/${id}=d`;
 
 export function photoFromDrive(f: DriveFile): GalleryPhoto {
@@ -82,26 +73,4 @@ export function photoFromDrive(f: DriveFile): GalleryPhoto {
     day,
     team,
   };
-}
-
-// Cache em memória durante a visita: home e galeria compartilham a mesma busca.
-let pending: Promise<GalleryPhoto[]> | null = null;
-let fetchedAt = 0;
-const TTL_MS = 120_000;
-
-export function fetchDrivePhotos(): Promise<GalleryPhoto[]> {
-  if (!galleryDriveEndpoint) return Promise.resolve([]);
-  if (pending && Date.now() - fetchedAt < TTL_MS) return pending;
-  fetchedAt = Date.now();
-  pending = fetch(galleryDriveEndpoint, { redirect: "follow" })
-    .then((r) => {
-      if (!r.ok) throw new Error(`Galeria respondeu ${r.status}`);
-      return r.json() as Promise<DriveResponse>;
-    })
-    .then((data) => (Array.isArray(data.fotos) ? data.fotos.map(photoFromDrive) : []))
-    .catch((err) => {
-      pending = null; // permite nova tentativa
-      throw err;
-    });
-  return pending;
 }

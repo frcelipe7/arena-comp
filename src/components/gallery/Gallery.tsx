@@ -18,7 +18,7 @@ gsap.registerPlugin(useGSAP);
 
 type Filter = "todos" | (typeof galleryDays)[number]["id"] | NonNullable<GalleryPhoto["category"]>;
 
-/** URL da foto: caminhos de /public recebem o basePath; URLs do Drive ficam como estão. */
+/** Caminhos locais recebem o basePath; URLs do Drive ficam como estão. */
 export const photoUrl = (p: GalleryPhoto, size: "thumb" | "full") => withBase(size === "thumb" ? (p.thumb ?? p.src) : p.src);
 
 const dayLabel = (d?: string) => (d === "03/12/2026" ? "03 de dezembro" : d === "04/12/2026" ? "04 de dezembro" : null);
@@ -36,10 +36,6 @@ function matches(p: GalleryPhoto, f: Filter) {
 }
 
 const plural = (n: number, s: string, p: string) => `${n} ${n === 1 ? s : p}`;
-
-/* ------------------------------------------------------------------ */
-/* Estado dos downloads                                                */
-/* ------------------------------------------------------------------ */
 
 type DownloadState =
   | { kind: "idle" }
@@ -147,10 +143,6 @@ function DownloadStatus({ state, onCancel, className }: { state: DownloadState; 
     </div>
   );
 }
-
-/* ------------------------------------------------------------------ */
-/* Galeria                                                             */
-/* ------------------------------------------------------------------ */
 
 /** Galeria editorial com filtros, seleção, download e visualizador ampliado. */
 export function Gallery() {
@@ -378,7 +370,7 @@ export function Gallery() {
         )}
       </div>
 
-      {/* Barra fixa da seleção + status dos downloads (fora do visualizador) */}
+      {/* Barra da seleção e status dos downloads */}
       {!dialogOpen && (
         <div className="pointer-events-none fixed inset-x-0 bottom-4 z-40 flex flex-col items-center gap-2 px-4">
           <DownloadStatus state={downloads.state} onCancel={downloads.cancel} />
@@ -512,7 +504,7 @@ export function Gallery() {
                 {[dayLabel(current.day), current.team && `Equipe ${teamById[current.team].name}`].filter(Boolean).join(" · ")}
               </p>
             </div>
-            {/* status dos downloads dentro do visualizador (o dialog fica por cima do resto da página) */}
+            {/* O dialog cobre a página, então o status também é exibido aqui. */}
             <div className="pointer-events-none fixed inset-x-0 bottom-4 flex justify-center px-4">
               <DownloadStatus state={downloads.state} onCancel={downloads.cancel} />
             </div>
