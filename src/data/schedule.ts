@@ -1,0 +1,132 @@
+import type { ScheduleDay } from "@/types";
+
+
+export const schedule: ScheduleDay[] = [
+  {
+    id: "dia-1",
+    date: "2026-12-03",
+    dayNumber: "03",
+    month: "dez",
+    weekday: "Quinta-feira",
+    label: "Dia 1",
+    summary: "Abertura, Algoritmo Natural e etapa inicial da Maratona de Programação.",
+    startTime: "19h30",
+    endTime: null,
+    items: [
+      {
+        id: "d1-inicio",
+        time: "19h30",
+        title: "Início da programação",
+        responsible: "Comissão organizadora",
+        note: "No início de cada dia é registrada a presença dos discentes, com a indicação do grupo (art. 4º, § 1º).",
+        status: "confirmado",
+      },
+      {
+        id: "d1-abertura",
+        time: null,
+        title: "Abertura e apresentação dos gritos de guerra",
+        responsible: "Todos os grupos",
+        note: "O grito de guerra é apresentado na abertura do primeiro dia (art. 10).",
+        status: "pendente",
+      },
+      {
+        id: "d1-algoritmo",
+        time: null,
+        title: "Desafio Algoritmo Natural",
+        responsible: "Comissão avaliadora",
+        challenge: "algoritmo-natural",
+        status: "pendente",
+      },
+      {
+        id: "d1-maratona",
+        time: null,
+        title: "Maratona de Programação, etapa inicial",
+        responsible: "Comissão avaliadora",
+        challenge: "maratona",
+        status: "pendente",
+      },
+    ],
+    notices: [
+      {
+        tone: "pending",
+        text: "Os horários de cada atividade do primeiro dia serão confirmados pela organização. Está confirmado apenas o início, às 19h30.",
+      },
+    ],
+  },
+  {
+    id: "dia-2",
+    date: "2026-12-04",
+    dayNumber: "04",
+    month: "dez",
+    weekday: "Sexta-feira",
+    label: "Dia 2",
+    summary: "Perguntas e Respostas, Robótica, apuração final e premiação.",
+    startTime: "13h40",
+    endTime: "17h",
+    items: [
+      {
+        id: "d2-presenca",
+        time: "13h40 às 14h",
+        title: "Registro de presença e montagem das bancadas de robótica",
+        responsible: "Comissão organizadora",
+        status: "confirmado",
+      },
+      {
+        id: "d2-abertura",
+        time: "14h às 14h10",
+        title: "Abertura do segundo dia e leitura do placar parcial",
+        responsible: "Comissão organizadora",
+        status: "confirmado",
+      },
+      {
+        id: "d2-perguntas",
+        time: "14h10 às 15h10",
+        title: "Desafio Perguntas e Respostas",
+        responsible: "Comissão avaliadora",
+        challenge: "perguntas-e-respostas",
+        status: "confirmado",
+      },
+      {
+        id: "d2-intervalo",
+        time: "15h10 às 15h25",
+        title: "Intervalo e preparação dos robôs",
+        responsible: "Grupos",
+        status: "confirmado",
+      },
+      {
+        id: "d2-robotica",
+        time: "15h25 às 16h40",
+        title: "Desafio de Robótica",
+        responsible: "Comissão avaliadora",
+        challenge: "robotica",
+        status: "confirmado",
+      },
+      {
+        id: "d2-final",
+        time: "16h40 às 17h",
+        title: "Apuração final, divulgação do resultado, premiação e coffee break",
+        responsible: "Comissão organizadora",
+        status: "confirmado",
+      },
+      {
+        id: "d2-maratona-final",
+        time: null,
+        title: "Maratona de Programação, etapa final",
+        responsible: "Comissão avaliadora",
+        challenge: "maratona",
+        note: "O regimento prevê uma final da Maratona no segundo dia (art. 11, II), mas não indica o horário no quadro. A organização precisa confirmar.",
+        status: "pendente",
+      },
+    ],
+    notices: [
+      {
+        tone: "info",
+        text: "Os horários podem sofrer ajustes de até 15 minutos por decisão da comissão organizadora (art. 4º, § 3º).",
+      },
+      {
+        tone: "pending",
+        text: "Horário da etapa final da Maratona de Programação a confirmar pela organização.",
+      },
+    ],
+  },
+];

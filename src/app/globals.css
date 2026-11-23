@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+/*
+  Identidade Arena Comp 2026
+  - navy: azul do logotipo (#022442)
+  - gold: amarelo do "COMP" e do crescente do emblema
+  - paper: papel creme da arte de divulgação
+*/
+@theme {
+  --color-navy-950: #01162b;
+  --color-navy-900: #011c36;
+  --color-navy: #022442;
+  --color-navy-700: #0b3561;
+  --color-navy-500: #3c5a80;
+  --color-navy-300: #8fa3bd;
+  --color-gold: #f5b623;
+  --color-gold-300: #ffd56b;
+  --color-gold-700: #a8740a;
+  --color-paper: #f1e5c9;
+  --color-paper-50: #fbf6ea;
+  --color-paper-100: #f7efdc;
+  --color-paper-300: #e6d5ae;
+  --color-ink: #022442;
+  --color-ink-soft: #3d4f66;
+  --color-pending: #b3501c;
+
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-marquee: marquee 38s linear infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+html {
+  scroll-padding-top: 6rem;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  background-color: var(--color-paper);
+  /* textura de papel: definida em layout.tsx (precisa do basePath) */
+  background-image: var(--paper-texture);
+  background-size: 900px auto;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-navy);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+.on-paper :focus-visible,
+.focus-navy:focus-visible {
+  outline-color: var(--color-navy);
+}
+
+/* Título gigante do hero, inspirado no cartaz */
+.display {
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 0.86;
+}
+
+.text-stroke-navy {
+  -webkit-text-stroke: 2px var(--color-navy);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Grade sutil de "arena" usada nos painéis navy */
+.arena-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Accordion: altura animada com grid-rows */
+.accordion-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 320ms var(--ease-out-quart);
+}
+.accordion-panel[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+.accordion-panel > div {
+  overflow: hidden;
+}
+
+dialog::backdrop {
+  background: rgb(1 22 43 / 0.72);
+  backdrop-filter: blur(4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
