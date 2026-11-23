@@ -145,6 +145,12 @@ export interface GalleryPhoto {
   category?: GalleryCategory;
   day?: "03/12/2026" | "04/12/2026";
   team?: TeamId;
+  /** Arquivo original para download (se ausente, usa `src`). */
+  download?: string;
+  /** Nome do arquivo ao baixar (ex.: "foto-001.jpg"). */
+  fileName?: string;
+  /** Subpasta de origem no Drive (vira pasta dentro do ZIP). */
+  folder?: string;
   /** Dimensões reais (opcionais; ajudam a reservar espaço no grid). */
   width?: number;
   height?: number;

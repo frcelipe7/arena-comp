@@ -43,18 +43,29 @@ Todo o conteúdo fica em `src/data/`:
 | `challenges.ts`, `scoring.ts`, `rules.ts` | Regras do regimento. |
 | `event.ts` | Datas, local, documentos e menu. |
 
-### Fotos da galeria (Google Drive)
+### Fotos da galeria (Google Drive) — atualização automática
 
-As fotos ficam na pasta **ArenaComp** do Google Drive (pública para leitura), com as subpastas `03-dezembro`, `04-dezembro`, `algoritmo-natural`, `maratona-programacao`, `perguntas-respostas`, `robotica`, `premiacao`, `bastidores` e `equipes/<equipe>`.
+As fotos ficam na pasta **ArenaComp** do Google Drive (pública para leitura), nas subpastas `03-dezembro`, `04-dezembro`, `algoritmo-natural`, `maratona-programacao`, `perguntas-respostas`, `robotica`, `premiacao`, `bastidores` e `equipes/<equipe>`.
 
-**Como as fotos chegam ao site:**
+**Como as fotos chegam ao site, sem novo build e sem acesso ao servidor:**
 
-1. **No build (automático):** `npm run build` roda `scripts/galeria-drive.mjs`, que lê a pasta pública e grava a lista em `src/data/galeria-drive.json`. Toda publicação já sai com as fotos que estiverem no Drive. Para conferir sem buildar: `npm run galeria:drive -- --ver`.
-2. **Ao vivo (opcional, recomendado durante o evento):** publique o Apps Script [`deploy/galeria-apps-script.gs`](deploy/galeria-apps-script.gs) (o ID da pasta já está preenchido; instruções no topo do arquivo) e cole a URL `/exec` em `galleryDriveEndpoint` (`src/data/gallery.ts`). Depois de um build com a URL, fotos novas aparecem em até ~2 minutos **sem novo build**, e a **Descrição** do arquivo no Drive vira a legenda.
+```
+Drive (pasta ArenaComp) ──a cada 5 min──▶ Planilha, aba "Galeria" ──navegador──▶ site
+        script da planilha (deploy/planilha-galeria.gs)       (a cada 3 min com a página aberta)
+```
 
-**Filtros:** a pasta define onde a foto aparece. `03-dezembro`/`04-dezembro` vão para o filtro do dia; Algoritmo Natural conta no dia 03; Perguntas e Respostas, Robótica e Premiação no dia 04; Maratona nos dois dias; `equipes/<equipe>` em Equipes com o nome da equipe.
+**Instalação (uma única vez, pela conta dona da planilha):**
 
-O site usa versões redimensionadas pelo Google (900 px no grid, 2000 px no visualizador), então pode subir as fotos originais.
+1. Abra a planilha de pontuação → **Extensões → Apps Script**.
+2. Apague o conteúdo, cole [`deploy/planilha-galeria.gs`](deploy/planilha-galeria.gs) e salve.
+3. Selecione a função **`instalar`** e clique em **Executar**. Autorize o acesso (em "O Google não verificou este app": Avançado → Acessar).
+4. A aba **Galeria** é criada e passa a se atualizar sozinha a cada 5 minutos. Na planilha surge o menu **Arena Comp → Atualizar galeria agora**.
+
+**Regras para tudo continuar funcionando:** não renomear a aba `Galeria` nem a aba `Página1`; manter a planilha e a pasta do Drive como "Qualquer pessoa com o link: Leitor".
+
+**Filtros:** a pasta define onde a foto aparece. `03-dezembro`/`04-dezembro` vão para o filtro do dia; Algoritmo Natural conta no dia 03; Perguntas e Respostas, Robótica e Premiação no dia 04; Maratona nos dois dias; `equipes/<equipe>` em Equipes com o nome da equipe. A **Descrição** do arquivo no Drive vira a legenda.
+
+O site usa versões redimensionadas pelo Google (900 px no grid, 2000 px no visualizador) e baixa o original nos downloads. Se a aba `Galeria` não existir, o site mostra as fotos lidas no último `npm run build` (`scripts/galeria-drive.mjs`).
 
 Fotos também podem ser colocadas no próprio site (`public/images/gallery/`, rode `npm run galeria:otimizar` e registre em `src/data/gallery.ts`); elas aparecem junto com as do Drive.
 

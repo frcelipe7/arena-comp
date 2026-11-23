@@ -1,67 +1,67 @@
 {
-  "atualizadoEm": "2026-11-23T13:03:55.172Z",
+  "atualizadoEm": "2026-11-23T13:20:58.162Z",
   "planilha": "1o72KYbuZCXk2Et7BlNabak5INelt-ijhAcuwkGIqhzE",
   "aba": "Página1",
   "linhas": [
     {
       "equipe": "Pressman",
-      "algoritmoNatural": 100,
-      "maratona": 100,
-      "perguntasERespostas": 100,
-      "robotica": 100,
-      "bonus": 20,
+      "algoritmoNatural": null,
+      "maratona": null,
+      "perguntasERespostas": null,
+      "robotica": null,
+      "bonus": null,
       "penalidade": null,
-      "total": 420
+      "total": 0
     },
     {
       "equipe": "Turing",
-      "algoritmoNatural": 70,
-      "maratona": 20,
-      "perguntasERespostas": 10,
-      "robotica": 20,
-      "bonus": 0,
+      "algoritmoNatural": null,
+      "maratona": null,
+      "perguntasERespostas": null,
+      "robotica": null,
+      "bonus": null,
       "penalidade": null,
-      "total": 120
+      "total": 0
     },
     {
       "equipe": "Sommerville",
-      "algoritmoNatural": 80,
-      "maratona": 40,
-      "perguntasERespostas": 20,
-      "robotica": 30,
-      "bonus": 0,
+      "algoritmoNatural": null,
+      "maratona": null,
+      "perguntasERespostas": null,
+      "robotica": null,
+      "bonus": null,
       "penalidade": null,
-      "total": 170
+      "total": 0
     },
     {
       "equipe": "Kurose",
-      "algoritmoNatural": 10,
-      "maratona": 20,
-      "perguntasERespostas": 10,
-      "robotica": 50,
-      "bonus": 10,
+      "algoritmoNatural": null,
+      "maratona": null,
+      "perguntasERespostas": null,
+      "robotica": null,
+      "bonus": null,
       "penalidade": null,
-      "total": 100
+      "total": 0
     },
     {
       "equipe": "Ada",
-      "algoritmoNatural": 50,
-      "maratona": 82,
-      "perguntasERespostas": 40,
-      "robotica": 10,
-      "bonus": 5,
+      "algoritmoNatural": null,
+      "maratona": null,
+      "perguntasERespostas": null,
+      "robotica": null,
+      "bonus": null,
       "penalidade": null,
-      "total": 187
+      "total": 0
     },
     {
       "equipe": "Grace",
-      "algoritmoNatural": 60,
-      "maratona": 70,
-      "perguntasERespostas": 0,
-      "robotica": 30,
-      "bonus": 15,
+      "algoritmoNatural": null,
+      "maratona": null,
+      "perguntasERespostas": null,
+      "robotica": null,
+      "bonus": null,
       "penalidade": null,
-      "total": 175
+      "total": 0
     }
   ]
 }

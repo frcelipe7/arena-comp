@@ -44,6 +44,12 @@ function findTeam(segment: string): TeamId | undefined {
 /** URL de imagem redimensionada pelo próprio Google (arquivo público no Drive). */
 export const driveImage = (id: string, width: number) => `https://lh3.googleusercontent.com/d/${id}=w${width}`;
 
+/**
+ * Arquivo original, byte a byte (sufixo "=d"), com CORS liberado pelo Google.
+ * (O endereço drive.usercontent.google.com recusa pedidos vindos de outro site.)
+ */
+export const driveOriginal = (id: string) => `https://lh3.googleusercontent.com/d/${id}=d`;
+
 export function photoFromDrive(f: DriveFile): GalleryPhoto {
   let category: GalleryCategory | undefined;
   let day: GalleryPhoto["day"];
@@ -67,6 +73,9 @@ export function photoFromDrive(f: DriveFile): GalleryPhoto {
     id: `drive-${f.id}`,
     src: driveImage(f.id, 2000),
     thumb: driveImage(f.id, 900),
+    download: driveOriginal(f.id),
+    fileName: f.nome,
+    folder: f.pasta,
     alt: f.descricao.trim() || fallbackAlt,
     caption: f.descricao.trim() || undefined,
     category,
